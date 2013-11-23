@@ -1,0 +1,7 @@
+// When we input this into tweet_read:
+
+> If (#stanfurd is 0) (Return 1)
+
+//We will output:
+[">", "If", ["#stanfurd", "is", 0], ["Return", 1]]
+
