@@ -7,33 +7,35 @@ output array:
 The backslash is an escape. It indicates that the double-quote is actually part of the string.
 
 */
+var tokenize = function(tweet) {
+    tweet = tweet.toLowerCase().replace(/[(]/g, " ( ", "gi");
+    tweet = tweet.replace(/[)]/g, " ) ", "gi");
+	var list = tweet.split(" ");
+	for(var i = list.length - 1; i >= 0; i--) {
+	if(list[i] === "") {
+	list.splice(i, 1);
+	}
+	if(is_number(list[i])) {
+	list[i] = Number(list[i]);
+	}
+	}
+	return list;
+};
+
+var is_number = function(token) {
+        return !isNaN(token);
+	}
 
 function read_tweet(text) {
     var string = text; //"> If (#stanfurd is (print 5) 0) (Return 1)";
     // When we input this into tweet_read:
-	//"> If (#stanfurd is 0) (Return 1)"
+    //"> If (#stanfurd is 0) (Return 1)"
 	//We will output:
 	//[">", "If", ["#stanfurd", "is", 0], ["Return", 1]]
 	//---------------------------------------------------------
-	var tokenize = function(tweet) {
-	        tweet = tweet.toLowerCase().replace(/[(]/g, " ( ", "gi");
-	    tweet = tweet.replace(/[)]/g, " ) ", "gi");
-	    var list = tweet.split(" ");
-	    for(var i = list.length - 1; i >= 0; i--) {
-	        if(list[i] === "") {
-	            list.splice(i, 1);
-	        }
-	        if(is_number(list[i])) {
-	            list[i] = Number(list[i]);
-	        }
-	    }
-	    return list;
-	};
 	//console.log(tokenize(string));
 	//[ '>', 'if', '(', '#stanfurd', 'is', 0, ')', '(', 'return', 1, ')' ]
-	var is_number = function(token) {
-	    return !isNaN(token);
-	}
+	
 
 	var number_of_parens =  0;
 
@@ -154,23 +156,22 @@ function read_tweet(text) {
         return tokens
     }
     
-    var filter_web_links = function (tokens) {
-        for (var i = 0; i < tokens.length; i++) {
-            if(typeof tokens[i] === "string") {
-                if (tokens[i].indexOf("http://") === 0) {
-                    tokens[i] = tokens[i].link(tokens[i]);
-                }
-            }
-            else {
-                filter_web_links(tokens[i]);
-            }
-        }
-        return tokens;
-    }
 
 	//console.log(tokenize(string));
 	//console.log(tweetread(tokenize(string), []));
-	return we_are_number(filter_web_links(quote_destroyer(tweetread(tokenize(string), []))));
+	return we_are_number(quote_destroyer(tweetread(tokenize(string), [])));
 }
-var string = "> If ((#n is 0) or (#n is 1)) (Return 1)";
+var string = "> If ((#n is 0) or (#n is 1)) (Return http://www.google.com)";
 console.log(read_tweet(string));
+
+var filter_web_links = function (tweet) {
+	var tokens = tokenize(tweet);
+    for (var i = 0; i < tokens.length; i++) {
+        if(typeof tokens[i] === 'string') {
+        if (tokens[i].indexOf("http://") === 0) {
+                tokens[i] = tokens[i].link(tokens[i]);
+        }
+        }
+    }
+    return tokens;
+}
