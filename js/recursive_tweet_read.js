@@ -7,6 +7,15 @@ output array:
 The backslash is an escape. It indicates that the double-quote is actually part of the string.
 
 */
+/*
+input string:
+> Print "Hello World!"
+output array:
+[">", "Print", "\"Hello World!\""]
+
+The backslash is an escape. It indicates that the double-quote is actually part of the string.
+
+*/
 var tokenize = function (tweet) {
     tweet = tweet.replace(/[(]/g, " ( ", "gi");
     tweet = tweet.replace(/[)]/g, " ) ", "gi");
@@ -132,8 +141,25 @@ var is_number = function (token) {
     }
 var string = "> If ((#n is 0) or (#n is 1)) (Return http://www.google.com)";
 //console.log(read_tweet(string));
-var string2 = "> If ((#n is 0) or (#n is 1)) (@Pokemon))";
+var string2 = "> If ((#n is 0) or (#n is 1)) (@Pokemon&))";
 //console.log(read_tweet(string));
+var string3 = "> If ((#n is 0) or (#n is 1)) (@Pokemon*))";
+//console.log(read_tweet(string));
+var string4 = "> If ((#n is 0) or (#n is 1)) (@Pokemon:))";
+//console.log(read_tweet(string));
+
+
+
+function alphanumeric(txt){  
+    var lettersNumber = /^[0-9a-zA-Z]+$/;  
+    if(txt.match(lettersNumber)){  
+        return true;  
+    }  
+    else{ 
+        return false;   
+    }  
+}  
+
 
 
 var filter_web_links = function (tweet) {
@@ -144,7 +170,12 @@ var filter_web_links = function (tweet) {
                 tokens[i] = tokens[i].link(tokens[i]);
             }
             else if (tokens[i].indexOf("@") === 0){
-            tokens[i] = tokens[i].link("http://www.twitter.com/" + tokens[i].substring(1,tokens[i].length) );
+                var profile = tokens[i].substring(1,tokens[i].length)
+                while(!((alphanumeric(profile.charAt(profile.length - 1))) && (profile.charAt(profile.length - 1) !== "_"))){
+                    profile = profile.substring(0, profile.length - 1)
+                    
+                }
+                  tokens[i] = tokens[i].link("http://www.twitter.com/" + profile );
             }
         }
     }
