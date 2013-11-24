@@ -26,7 +26,7 @@ function switch_to(target) {
 // Renders an array of tweets in the specified HTML element.
 function display_tweets(user_tweets, element) {
 	for(var i = 0; i < user_tweets.length; i++) {
-		$(element).append('<div class="tweet" id="'+user_tweets[i]["id"]+'">'+user_tweets[i]["webtext"]+'<div class="tweets"></div></div>');
+		$(element).append('<div class="tweet" id="'+user_tweets[i]["id"]+'">'+user_tweets[i]["text"]+'<div class="tweets"></div></div>');
 		display_tweets(user_tweets[i]["children"], '#'+user_tweets[i]["id"]+' > .tweets');
 	}
 }
@@ -51,5 +51,5 @@ function process_composed() {
 	if(x) {
 		output(x);
 	}
-	$("#interpreter").scrollTop($("#interpreter")[0].scrollHeight);
+	$("body").scrollTop($("body")[0].scrollHeight);
 }
