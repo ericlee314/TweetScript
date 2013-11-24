@@ -12,11 +12,12 @@ var make_child_frame = function(parent){
 }
 
 function lookup(frame, var_name) {
+		console.log(frame);
 	if(var_name in frame["variables"]) {
 		return frame["variables"][var_name];
 	}
 	else if(frame["parent"]) {
-		lookup(frame["parent"]);
+		lookup(frame["parent"], var_name);
 	}
 	else {
 		// do nothing
@@ -26,24 +27,18 @@ function lookup(frame, var_name) {
 
 var tweeteval = function(tweet, frame) 
 {
-	console.log('tweeteval:');
-	console.log(tweet["text"]);
+		console.log(frame);
     var body = tweet["tokenized"];
     var children = tweet["children"];
 	
     if(body[0] == ">" || body[0] == '&gt;')
     {
+		console.log(frame);
         var x = tweeteval_child(body.slice(1), frame);
-		if(typeof x == 'object') {
-			return tweeteval_child(x, frame);
+		if(x) {
+			return eval(x, frame);
 		}
-		else if(typeof x == "string" && x[0] == '#') {
-			return lookup(frame, x);
-		}
-		else if(x){
-			return x;
-		}
-    }  
+    }
     
     else
     {
@@ -55,6 +50,7 @@ var tweeteval = function(tweet, frame)
 
 var tweeteval_child = function(body, frame)
 {
+		console.log(frame);
 	
 	var index = matching_index(body, function_names);
 	
@@ -62,22 +58,47 @@ var tweeteval_child = function(body, frame)
     {
 		var the_function = function_defs[index];
 		var the_frame = make_child_frame(frame);
+		for(var i = 0; i < function_names[index].length; i++) {
+			var token = function_names[index][i];
+			console.log(token);
+			if(typeof token == 'string' && token[0] == '#') {
+				the_frame["variables"][token] = eval(body[i], frame);
+				console.log(the_frame);
+			}
+		}
 		for(var j = 0; j < the_function.length; j++) {
 			var x = tweeteval(the_function[j], the_frame);
+			console.log(the_frame);
 			if(x) {
 				return x;
 			}
 		}
     }
 	else {
+		console.log(frame);
 		return tweeteval_builtin(body, frame);
 	}
 }
     
 // As a last-ditch effort, tries to find a matching built-in function to call
 function tweeteval_builtin(body, frame) {
+		console.log(frame);
 	console.log("BUILT-IN FUNCTION:");
 	console.log(body);
+	
+	var animal_sounds = {
+        dog: "woof", 
+        cat: "meow", 
+        bird: "tweet",
+        mouse: "squeak",
+        cow: "moo",
+        frog: "croak",
+        elephant: "toot",
+        duck: "quack",
+        fush: "blub",
+        seal: "OW OW OW",
+        fox:["Ring-ding-ding-ding-dingeringeding!", "Gering-ding-ding-ding-dingeringeding!", "Wa-pa-pa-pa-pa-pa-pow!", "Hatee-hatee-hatee-ho!", "Joff-tchoff-tchoff-tchoffo-tchoffo-tchoff!", "Jacha-chacha-chacha-chow!", "Fraka-kaka-kaka-kaka-kow!", "A-hee-ahee ha-hee!", "A-oo-oo-oo-ooo!", "Woo-oo-oo-ooo!"]
+    }
 	
 	var functions = [
 	["#something"],
@@ -88,7 +109,15 @@ function tweeteval_builtin(body, frame) {
 	["#a", "plus", "#b"],
 	["#a", "minus", "#b"],
 	["#a", "times", "#b"],
-	["#a", "divided", "by", "#b"]
+	["#a", "divided", "by", "#b"],
+	["if", "#pred", "#value"],
+	["not", "#x"],
+	["#a", "and", "#b"],
+	["#a", "or", "#b"],
+	["#a", "is", "#b"],
+	["ted"],
+    ["doge"],
+    ["what", "does", "the", "#animal", "say?"],
 	];
 	
 	var index = matching_index(body, functions);
@@ -116,12 +145,14 @@ function tweeteval_builtin(body, frame) {
 	return body[1];
 	
 	case 4: // Variable binding
-	frame["variables"][body[1]] = body[3];
+	frame["variables"][body[1]] = eval(body[3], frame);
 	break;
 	
 	case 5: // Addition
 	var a = eval(body[0], frame);
 	var b = eval(body[2], frame);
+	console.log(a);
+	console.log(b);
 	if(typeof a == 'number' && typeof b == 'number') {
 		return a + b;
 	}
@@ -146,7 +177,56 @@ function tweeteval_builtin(body, frame) {
 	if(typeof a == 'number' && typeof b == 'number' && b != 0) {
 		return a / b;
 	}
+	
+	case 9: // If statement
+	if(eval(body[1], frame)) {
+		var value = eval(body[2], frame);
+		return value;
 	}
+	break;
+
+	case 10: // Not
+	var pred = eval(body[1], frame);
+	return !pred;
+	
+	case 11: // And
+	if(eval(body[0], frame) && eval(body[2], frame)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+	
+	case 12: // Or
+	if(eval(body[0], frame) || eval(body[2], frame)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+	case 13: // Is
+	return eval(body[0], frame) == eval(body[2], frame);
+	}
+	
+	case 14: // ted Easter Egg
+    return "I contributed zero.";
+
+    case 15: // Doge
+    return "Much Amaze\n So Doge\n Very Tweet";
+
+    case 16: // What does the animal say?
+    var animal = eval(body[3], frame);
+    if(animal in animal_sounds) {
+        if(animal === "fox") {
+            return animal_sounds[animal][Math.floor(Math.random()*(animal_sounds[animal].length))];
+        }
+        else {
+            return animal_sounds[animal];
+        }
+    }
+    else {
+        return "No one knows what the " + animal + " says. Do you?";
+    }
 }
     
     
@@ -193,11 +273,12 @@ function matching_index(body, names) {
 }
 
 function eval(x, frame) {
+		console.log(frame);
 	if(typeof x == 'number' || typeof x == 'boolean') {
 		return x;
 	}
 	else if(typeof x == 'object') {
-		return tweeteval_child(x);
+		return tweeteval_child(x, frame);
 	}
 	else if(x[0] == '#') {
 		return lookup(frame, x);
