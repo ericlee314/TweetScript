@@ -1,4 +1,4 @@
-var string = "> If (#stanfurd is 0) (Return 1)";
+var string = "> If (#stanfurd is (print 5) 0) (Return 1)";
 // When we input this into tweet_read:
 //"> If (#stanfurd is 0) (Return 1)"
 //We will output:
@@ -24,6 +24,26 @@ var is_number = function(token) {
     return !isNaN(token);
 }
 
+var number_of_parens =  0;
+
+var paren_destroyer = function(number, tokenarr)
+{
+    for (var counter = 0; counter < number; counter++)
+    {
+        while(tokenarr[0] !== ")")
+        {
+            if (tokenarr.length === 0)
+            {
+                break;
+            }
+            tokenarr.shift();
+        }
+        tokenarr.shift();
+    }
+    return tokenarr;
+}
+  
+
 var tweetread = function(tokens, arr)
 {
     if (tokens.length === 0)
@@ -33,16 +53,15 @@ var tweetread = function(tokens, arr)
     if (tokens[0] === "(")
     {
         arr.push(readtail(tokens.slice(1)));
-        while(tokens[0] !== ")")
-        {
-            tokens.shift();
-        }
-        tokens.shift();
-        tweetread(tokens, arr)
+        parens = number_of_parens + 1
+        number_of_parens++
+        tokens = paren_destroyer(parens, tokens);
+        tweetread(tokens, arr);
         return arr;
     }
     if (tokens[0] === ")")
     {
+        tokens.shift
         return arr;
     }
     else
