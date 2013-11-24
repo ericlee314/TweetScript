@@ -1,21 +1,43 @@
 <html>
 <head>
-<script src="js/jquery-1.10.2.min.js"></script>
+	<title>TweetScript</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="js/jquery-1.10.2.min.js"></script>
 
-<script type="text/javascript">
+	<script type="text/javascript">
+	$( document ).ready(function() {
+		$("#getstarted").click(function() {
+			$('#header').addClass('mini');
+			switch_to('interpreter');
+		});
+		$("#composer textarea").keypress(function(event) {
+			if(event.which == 13) {
+				event.preventDefault();
+				evaluate_composed();
+			}
+		});
+		$("#composer .button").click(evaluate_composed);
+	});
 
 	var tweets = new Object();
-
+	
+	/**
+	 * Loads a user's tweets from Twitter.
+	 */
 	function load_user(user) {
 		$('#message').html('Loading '+user+'...');
 		$.get('twitter/index.php?screen_name='+user, function(data) {
 			var obj = jQuery.parseJSON(data);
 			$("#message").html("");
-			$("#screens").append('<div id="'+user+'"><h2>@'+user+'</h2></div>');
+			$("#screens").append('<div id="'+user+'"><div class="tweets"></div></div>');
+			$("#tabs").append('<div id="'+user+'-tab" onclick="switch_to(\''+user+'\')">@'+user+'</div>');
 			make_tweet_objects(user, obj);
 		});
-	};
+	}
 	
+	/**
+	 * Takes the raw tweet data from Twitter and processes it.
+	 */
 	function make_tweet_objects(user, raw_tweets) {
 		var user_tweets = [];
 		
@@ -30,7 +52,7 @@
 			user_tweets.push(tweet);
 		}
 		
-		// Find children of all tweets
+		// Bind the children to their parents
 		for(var j = 0; j < user_tweets.length; j++) {
 			if(user_tweets[j]["parent"]) {
 				for(var k = j - 1; k >= 0; k--) {
@@ -48,19 +70,54 @@
 		});
 		
 		console.log(user_tweets);
-		
 		tweets[user] = user_tweets;
-	};
+		display_tweets(user_tweets, "#"+user+" > .tweets");
+	}
 	
-</script>
+	/**
+	 * Renders an array of tweets in the specified HTML element.
+	 */
+	function display_tweets(user_tweets, element) {
+		for(var i = 0; i < user_tweets.length; i++) {
+			$(element).append('<div class="tweet" id="'+user_tweets[i]["id"]+'"><div class="text">'+user_tweets[i]["text"]+'</div><div class="tweets"></div></div>');
+			display_tweets(user_tweets[i]["children"], '#'+user_tweets[i]["id"]+' > .tweets');
+		}
+	}
+	
+	function switch_to(target) {
+		$('#screens > div').hide();
+		$('#'+target).show();
+		$('#tabs > div').css('background', '#666');
+		$('#'+target+'-tab').css('background', '#ccc');
+	}
+	
+	function evaluate_composed() {
+		var text = $('#composer textarea').val();
+		$('#composer textarea').val('');
+		alert(text);
+	}
+	
+	</script>
 </head>
 <body>
-	<h1>TweetScript</h1>
-	<div id="message"></div>
-	<div id="screens">
-		<div id="interpeter">
-			<h2>Interpreter</h2>
+	<header id="header">
+		<img src="logo.png" id="logo">
+		<div id="explanation">TweetScript is a programming language composed entirely from your tweets.<a class="button" id="getstarted">Get started</a></div>
+	</header>
+	<section id="tabs">
+		<div id="interpreter-tab" onclick="switch_to('interpreter')">Interpreter</div>
+	</section>
+	<section id="screens">
+		<div id="interpreter">
+			<div class="tweets">
+				
+			</div>
+			<div id="composer">
+				<textarea></textarea>
+				<a class="button">Tweet</a>
+			</div>
 		</div>
-	</div>
+	</section>
+	<div id="message"></div>
 </body>
 </html>
