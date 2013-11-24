@@ -47,5 +47,9 @@ function process_composed() {
 	$('#composer textarea').val('> ');
 	var tweet = build_tweet(text);
 	display_tweets([tweet], '#interpreter > .tweets');
-	tweeteval(tweet, global_frame);
+	var x = tweeteval(tweet, global_frame);
+	if(x) {
+		output(x);
+	}
+	$("body").scrollTop($("body")[0].scrollHeight);
 }

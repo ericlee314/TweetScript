@@ -4,10 +4,10 @@ var tweets = new Object();
  * Loads a user's tweets from Twitter.
  */
 function load_user(user) {
-	$('#message').html('Loading '+user+'...');
+	output('loading @'+user+'...');
 	$.get('twitter/index.php?screen_name='+user, function(data) {
 		var obj = jQuery.parseJSON(data);
-		$("#message").html("");
+		output('successfully loaded @'+user+'.');
 		$("#screens").append('<div id="'+user+'"><div class="tweets"></div></div>');
 		$("#tabs").append('<div id="'+user+'-tab" onclick="switch_to(\''+user+'\')">@'+user+'</div>');
 		make_tweet_objects(user, obj);
@@ -53,7 +53,10 @@ function make_tweet_objects(user, raw_tweets) {
 	tweets[user] = user_tweets;
 	display_tweets(user_tweets, "#"+user+" > .tweets");
 	for(var i = 0; i < user_tweets.length; i++) {
-		tweeteval(user_tweets[i], global_frame);
+		var x = tweeteval(user_tweets[i], global_frame);
+		if(x) {
+			output(x);
+		}
 	}
 }
 
