@@ -86,20 +86,6 @@ function tweeteval_builtin(body, frame) {
 	console.log("BUILT-IN FUNCTION:");
 	console.log(body);
 	
-	var animal_sounds = {
-        dog: "woof", 
-        cat: "meow", 
-        bird: "tweet",
-        mouse: "squeak",
-        cow: "moo",
-        frog: "croak",
-        elephant: "toot",
-        duck: "quack",
-        fush: "blub",
-        seal: "OW OW OW",
-        fox:["Ring-ding-ding-ding-dingeringeding!", "Gering-ding-ding-ding-dingeringeding!", "Wa-pa-pa-pa-pa-pa-pow!", "Hatee-hatee-hatee-ho!", "Joff-tchoff-tchoff-tchoffo-tchoffo-tchoff!", "Jacha-chacha-chacha-chow!", "Fraka-kaka-kaka-kaka-kow!", "A-hee-ahee ha-hee!", "A-oo-oo-oo-ooo!", "Woo-oo-oo-ooo!"]
-    }
-	
 	var functions = [
 	["#something"],
 	["import", "#someone"],
@@ -115,9 +101,6 @@ function tweeteval_builtin(body, frame) {
 	["#a", "and", "#b"],
 	["#a", "or", "#b"],
 	["#a", "is", "#b"],
-	["ted"],
-    ["doge"],
-    ["what", "does", "the", "#animal", "say?"],
 	];
 	
 	var index = matching_index(body, functions);
@@ -207,26 +190,6 @@ function tweeteval_builtin(body, frame) {
 	case 13: // Is
 	return eval(body[0], frame) == eval(body[2], frame);
 	}
-	
-	case 14: // ted Easter Egg
-    return "I contributed zero.";
-
-    case 15: // Doge
-    return "Much Amaze\n So Doge\n Very Tweet";
-
-    case 16: // What does the animal say?
-    var animal = eval(body[3], frame);
-    if(animal in animal_sounds) {
-        if(animal === "fox") {
-            return animal_sounds[animal][Math.floor(Math.random()*(animal_sounds[animal].length))];
-        }
-        else {
-            return animal_sounds[animal];
-        }
-    }
-    else {
-        return "No one knows what the " + animal + " says. Do you?";
-    }
 }
     
     
