@@ -38,7 +38,8 @@ var tweetread = function(tokens, arr)
             tokens.shift();
         }
         tokens.shift();
-        arr.push(tweetread(tokens, arr));
+        tweetread(tokens, arr)
+        return arr;
     }
     if (tokens[0] === ")")
     {
