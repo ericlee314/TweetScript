@@ -140,7 +140,7 @@ var filter_web_links = function (tweet) {
     var tokens = tokenize(tweet);
     for (var i = 0; i < tokens.length; i++) {
         if (typeof tokens[i] === 'string') {
-            if (tokens[i].indexOf("http://") === 0) {
+            if (tokens[i].indexOf("http://") === 0 || tokens[i].indexOf("https://") === 0) {
                 tokens[i] = tokens[i].link(tokens[i]);
             }
             else if (tokens[i].indexOf("@") === 0){
