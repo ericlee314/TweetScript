@@ -1,3 +1,13 @@
+/*
+input string:
+> Print "Hello World!"
+output array:
+[">", "Print", "\"Hello World!\""]
+
+The backslash is an escape. It indicates that the double-quote is actually part of the string.
+
+*/
+
 function read_tweet(text) {
 	var string = text; //"> If (#stanfurd is (print 5) 0) (Return 1)";
 	// When we input this into tweet_read:
