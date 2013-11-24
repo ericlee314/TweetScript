@@ -1,0 +1,12 @@
+
+var make_child_frame = function(parent){
+	frame = new Object();
+	frame.parent = parent;
+}
+
+
+var bind_variable = function(frame, name, value){
+	frame[name] = value
+}
+
+
