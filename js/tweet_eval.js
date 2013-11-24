@@ -7,7 +7,7 @@ var tweeteval = function(tweet)
         
     if first === ">"
     {
-        tweeteval_chid(body);
+        tweeteval_child(body);
     }  
     
     else
@@ -18,8 +18,23 @@ var tweeteval = function(tweet)
 
 var tweeteval_child = function(tweet)
 {
-    var body = tweet.body;
-    return built_in_functions(body);
+    if (tweet.body.length === 0)
+    {
+        return;
+    }
+    var first = tweet.body.shift()
+    if (typeof first !== 'string')
+    {
+        return tweeteval_child(first)
+    }
+    else if (first in built_in_functions)
+    {
+        return built_in_functions(first)(tweeteval_child(tweet.body))
+    }
+    else
+    {
+        return first.concat(tweeteval_child(tweet.body))
+    }
 }
     
     
