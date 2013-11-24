@@ -10,7 +10,7 @@ The backslash is an escape. It indicates that the double-quote is actually part 
 
 function read_tweet(text) {
     var string = text; //"> If (#stanfurd is (print 5) 0) (Return 1)";
-	// When we input this into tweet_read:
+    // When we input this into tweet_read:
 	//"> If (#stanfurd is 0) (Return 1)"
 	//We will output:
 	//[">", "If", ["#stanfurd", "is", 0], ["Return", 1]]
@@ -134,10 +134,29 @@ function read_tweet(text) {
         }
         return temparray;
     }
+    
+    var we_are_number = function(tokens)
+    {
+        for (var counter = 0; counter < tokens.length; counter++)
+        {
+            if (typeof tokens[counter] === "string")
+            {
+                if (is_number(tokens[counter]))
+                {
+                    tokens[counter] = Number(tokens[counter]);
+                }
+            }
+            else
+            {
+                we_are_number(tokens[counter])
+            }           
+        }
+        return tokens
+    }
 
 	//console.log(tokenize(string));
 	//console.log(tweetread(tokenize(string), []));
-	return quote_destroyer(tweetread(tokenize(string), []));
+	return we_are_number(quote_destroyer(tweetread(tokenize(string), [])));
 }
 var string = "> If ((#n is 0) or (#n is 1)) (Return 1)";
 console.log(read_tweet(string));
