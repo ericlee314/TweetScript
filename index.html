@@ -3,17 +3,64 @@
 <script src="js/jquery-1.10.2.min.js"></script>
 
 <script type="text/javascript">
-  var get_tweets = function(screen_name) {
-	  $("#myThing").html("Loading...");
-	  $.get('twitter/index.php?screen_name='+screen_name, function(data) {
-		var obj = jQuery.parseJSON(data);
-	    //$("#myThing").html(obj);
-		console.log(obj);
-	  });
-  };
+
+	var tweets = new Object();
+
+	function load_user(user) {
+		$('#message').html('Loading '+user+'...');
+		$.get('twitter/index.php?screen_name='+user, function(data) {
+			var obj = jQuery.parseJSON(data);
+			$("#message").html("");
+			$("#screens").append('<div id="'+user+'"><h2>@'+user+'</h2></div>');
+			make_tweet_objects(user, obj);
+		});
+	};
+	
+	function make_tweet_objects(user, raw_tweets) {
+		var user_tweets = [];
+		
+		// Create new tweet objects
+		for(var i = raw_tweets.length-1; i >= 0; i--) {
+			var tweet = new Object();
+			tweet["id"] = raw_tweets[i]["id"];
+			tweet["parent"] = raw_tweets[i]["in_reply_to_status_id"];
+			tweet["text"] = raw_tweets[i]["text"];
+			tweet["children"] = [];
+			tweet["remove"] = false;
+			user_tweets.push(tweet);
+		}
+		
+		// Find children of all tweets
+		for(var j = 0; j < user_tweets.length; j++) {
+			if(user_tweets[j]["parent"]) {
+				for(var k = j - 1; k >= 0; k--) {
+					if(user_tweets[j]["parent"] == user_tweets[k]["id"]) {
+						user_tweets[k]["children"].push(user_tweets[j]);
+						user_tweets[j]["remove"] = true;
+					}
+				}
+			}
+		}
+		
+		// Filter out duplicate reply tweets
+		user_tweets = user_tweets.filter(function(tweet) {
+			return !(tweet["remove"]);
+		});
+		
+		console.log(user_tweets);
+		
+		tweets[user] = user_tweets;
+	};
+	
 </script>
 </head>
 <body>
-  <p id="myThing"></p>
+	<h1>TweetScript</h1>
+	<div id="message"></div>
+	<div id="screens">
+		<div id="interpeter">
+			<h2>Interpreter</h2>
+		</div>
+	</div>
 </body>
 </html>
