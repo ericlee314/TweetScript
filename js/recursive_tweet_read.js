@@ -132,6 +132,9 @@ var is_number = function (token) {
     }
 var string = "> If ((#n is 0) or (#n is 1)) (Return http://www.google.com)";
 //console.log(read_tweet(string));
+var string2 = "> If ((#n is 0) or (#n is 1)) (@Pokemon))";
+//console.log(read_tweet(string));
+
 
 var filter_web_links = function (tweet) {
     var tokens = tokenize(tweet);
@@ -139,6 +142,9 @@ var filter_web_links = function (tweet) {
         if (typeof tokens[i] === 'string') {
             if (tokens[i].indexOf("http://") === 0) {
                 tokens[i] = tokens[i].link(tokens[i]);
+            }
+            else if (tokens[i].indexOf("@") === 0){
+            tokens[i] = tokens[i].link("http://www.twitter.com/" + tokens[i].substring(1,tokens[i].length) );
             }
         }
     }
