@@ -125,6 +125,10 @@ body {
 	display: none;
 }
 
+#interpreter {
+	padding-bottom: 160px;
+}
+
 .tweet {
 	margin: 20px auto;
 	max-width: 800px;
@@ -150,18 +154,18 @@ body {
 }
 
 #composer {
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 	left: 50%;
-	width: 800px;
+	width: 900px;
 	height: 150px;
-	margin-left: -400px;
+	margin-left: -450px;
 	background: #ccc;
 }
 
 #composer textarea {
 	margin: 10px 10px 0 10px;
-	width: 780px;
+	width: 880px;
 	height: 70px;
 	resize: none;
 	border: none;

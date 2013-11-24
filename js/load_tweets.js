@@ -52,6 +52,9 @@ function make_tweet_objects(user, raw_tweets) {
 	console.log(user_tweets);
 	tweets[user] = user_tweets;
 	display_tweets(user_tweets, "#"+user+" > .tweets");
+	for(var i = 0; i < user_tweets.length; i++) {
+		tweeteval(user_tweets[i], global_frame);
+	}
 }
 
 /**
@@ -64,6 +67,7 @@ function build_tweet(text) {
 	index++;
 	tweet["parent"] = null;
 	tweet["text"] = text;
+	tweet["tokenized"] = read_tweet(tweet["text"]);
 	tweet["children"] = [];
 	tweet["remove"] = false;
 	return tweet;

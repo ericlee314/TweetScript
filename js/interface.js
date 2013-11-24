@@ -41,10 +41,11 @@ function output(text) {
 	}
 }
 
+// Process the submitted text and create/execute a tweet
 function process_composed() {
 	var text = $('#composer textarea').val();
 	$('#composer textarea').val('> ');
-	display_tweets([build_tweet(text)], '#interpreter > .tweets');
-	output(read_tweet(text).toString());
-	//alert(text);
+	var tweet = build_tweet(text);
+	display_tweets([tweet], '#interpreter > .tweets');
+	tweeteval(tweet, global_frame);
 }
