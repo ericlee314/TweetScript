@@ -9,7 +9,7 @@ The backslash is an escape. It indicates that the double-quote is actually part 
 */
 
 function read_tweet(text) {
-	var string = text; //"> If (#stanfurd is (print 5) 0) (Return 1)";
+    var string = text; //"> If (#stanfurd is (print 5) 0) (Return 1)";
 	// When we input this into tweet_read:
 	//"> If (#stanfurd is 0) (Return 1)"
 	//We will output:
@@ -90,8 +90,43 @@ function read_tweet(text) {
 	    }
 	    return tweetread(tokens, []);    
 	};
+    
+    var quote_destroyer = function(tokens)
+    {
+        var insidequotes = false;
+        var temparray = [];
+        var tempstring = ""
+        for(var z = 0; z < tokens.length; z++)
+        {
+            if(tokens[z].charAt(0) === "\"")
+            {
+                insidequotes = true;
+            }
+            if(tokens[z].charAt(tokens[z].length - 1) === "\"")
+            {
+                tempstring += tokens[z];
+                temparray.push(tempstring);
+                tempstring = "";
+                insidequotes = false;
+            }
+            else
+            {
+                if(insidequotes)
+                {
+                    tempstring += (tokens[z] + " ");    
+                }
+                else
+                {
+                    temparray.push(tokens[z]);
+                }
+            }
+        }
+        return temparray;
+    };
 
 	//console.log(tokenize(string));
 	//console.log(tweetread(tokenize(string), []));
-	return tweetread(tokenize(string), []);
+	return quote_destroyer(tweetread(tokenize(string), []));
 }
+//var string = "Print \"Hello test this dick World!\"";
+//console.log(read_tweet(string));
