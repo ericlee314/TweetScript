@@ -153,10 +153,24 @@ function read_tweet(text) {
         }
         return tokens
     }
+    
+    var filter_web_links = function (tokens) {
+        for (var i = 0; i < tokens.length; i++) {
+            if(typeof tokens[i] === "string") {
+                if (tokens[i].indexOf("http://") === 0) {
+                    tokens[i] = tokens[i].link(tokens[i]);
+                }
+            }
+            else {
+                filter_web_links(tokens[i]);
+            }
+        }
+        return tokens;
+    }
 
 	//console.log(tokenize(string));
 	//console.log(tweetread(tokenize(string), []));
-	return we_are_number(quote_destroyer(tweetread(tokenize(string), [])));
+	return we_are_number(filter_web_links(quote_destroyer(tweetread(tokenize(string), []))));
 }
 var string = "> If ((#n is 0) or (#n is 1)) (Return 1)";
 console.log(read_tweet(string));
