@@ -1,46 +1,19 @@
-<!DOCTYPE html>
 <html>
 <head>
-	<title>TweetScript</title>
-	<script src="js/jquery-1.10.2.min.js"></script>
-	<script>
-	/*$(document).ready(function(){
-	$("button").click(function(){
-	$.getJSON("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=twitterapi&count=10"
-	});*/
-		function searchTwitter(query) {
-		    $.ajax({
-		        url: 'http://search.twitter.com/search.json?' + jQuery.param(query),
-		        dataType: 'jsonp',
-		        success: function(data) {
-		            var tweets = $('#tweets');
-		            tweets.html('');
-		            for (res in data['results']) {
-		                tweets.append('<div>' + data['results'][res]['from_user'] + ' wrote: <p>' + data['results'][res]['text'] + '</p></div><br />');
-		        }
-		        }
-		    });
-		}
+<script src="js/jquery-1.10.2.min.js"></script>
 
-		$(document).ready(function() {
-		    $('#submit').click(function() {
-		        var params = {
-		            q: $('#query').val(),
-		            rpp: 5
-		        };
-		        // alert(jQuery.param(params));
-		        searchTwitter(params);
-		    });
-		});
-		</script>
+<script type="text/javascript">
+  var get_tweets = function(screen_name) {
+	  $("#myThing").html("Loading...");
+	  $.get('twitter/index.php?screen_name='+screen_name, function(data) {
+		var obj = jQuery.parseJSON(data);
+	    //$("#myThing").html(obj);
+		console.log(obj);
+	  });
+  };
+</script>
 </head>
 <body>
-	<div style="padding: 20px;">
-        <input id="query" type="text" value="blue angels" />
-        <input id="submit" type="button" value="Search" />
-    </div>
-    <div id="tweets" style="padding: 20px;">
-        Tweets will go here.
-    </div>
+  <p id="myThing"></p>
 </body>
 </html>
