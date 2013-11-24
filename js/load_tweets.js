@@ -27,7 +27,6 @@ function make_tweet_objects(user, raw_tweets) {
 		tweet["parent"] = raw_tweets[i]["in_reply_to_status_id"];
 		tweet["text"] = raw_tweets[i]["text"];
 		tweet["tokenized"] = read_tweet(tweet["text"]);
-		tweet["webtext"] = filter_web_links(tweet["text"]);
 		tweet["children"] = [];
 		tweet["remove"] = false;
 		user_tweets.push(tweet);
@@ -72,7 +71,6 @@ function build_tweet(text) {
 	tweet["parent"] = null;
 	tweet["text"] = text;
 	tweet["tokenized"] = read_tweet(tweet["text"]);
-	tweet["webtext"] = filter_web_links(tweet["text"]);
 	tweet["children"] = [];
 	tweet["remove"] = false;
 	return tweet;
