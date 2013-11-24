@@ -1,11 +1,9 @@
 var tweeteval = function(tweet) 
 {  
-    var variables = [];
-    var function_name = ""
     var body = tweet.body;
     var children = tweet.children
         
-    if first === ">"
+    if body[0] === ">"
     {
         tweeteval_child(body);
     }  
@@ -16,24 +14,27 @@ var tweeteval = function(tweet)
     }
 }
 
-var tweeteval_child = function(tweet)
+var tweeteval_child = function(body)
 {
-    if (tweet.body.length === 0)
+    functions = FUNCTION;
+    body.shift();
+    for (var i = 0, i < body.length, i++)
     {
-        return;
+        functions = functions.filter(function(f);
+        {        
+            if (typeof body[i] === 'string')
+            {
+                return body[i] === f[i]
+            }
+            else
+            {
+                return f[i][0] === "#";
+            }
+        });  
     }
-    var first = tweet.body.shift()
-    if (typeof first !== 'string')
+    if (functions.length > 0)
     {
-        return tweeteval_child(first)
-    }
-    else if (first in built_in_functions)
-    {
-        return built_in_functions[first](tweeteval_child(tweet.body))
-    }
-    else
-    {
-        return first.concat(tweeteval_child(tweet.body))
+        return functions[0];
     }
 }
     
