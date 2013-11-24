@@ -38,14 +38,10 @@ function read_tweet(text) {
 
     var number_of_parens =  0;
 
-    var paren_destroyer = function(number, tokenarr)
-    {
-        for (var counter = 0; counter < number; counter++)
-        {
-            while(tokenarr[0] !== ")")
-            {
-                if (tokenarr.length === 0)
-                {
+    var paren_destroyer = function(number, tokenarr){
+        for (var counter = 0; counter < number; counter++){
+            while(tokenarr[0] !== ")"){
+                if (tokenarr.length === 0){
                     break;
                 }
                 tokenarr.shift();
@@ -56,14 +52,11 @@ function read_tweet(text) {
     }
   
 
-    var tweetread = function(tokens, arr)
-    {
-        if (tokens.length === 0)
-        {
+    var tweetread = function(tokens, arr){
+        if (tokens.length === 0){
             return arr;
         }
-        if (tokens[0] === "(")
-        {
+        if (tokens[0] === "("){
             arr.push(readtail(tokens.slice(1)));
             parens = number_of_parens + 1
             number_of_parens++
@@ -71,22 +64,18 @@ function read_tweet(text) {
             tweetread(tokens, arr);
             return arr;
         }
-        if (tokens[0] === ")")
-        {
+        if (tokens[0] === ")"){
             tokens.shift
             return arr;
         }
-        else
-        {
+        else{
             arr.push(tokens[0]);
             return tweetread(tokens.slice(1), arr);
         }
     };
 
-    var readtail = function(tokens)
-    {
-        if (tokens.length === 0)
-        {
+    var readtail = function(tokens){
+        if (tokens.length === 0){
             return;
         }
         return tweetread(tokens, []);    
@@ -118,14 +107,10 @@ function read_tweet(text) {
 
 	var number_of_parens =  0;
 
-	var paren_destroyer = function(number, tokenarr)
-	{
-	    for (var counter = 0; counter < number; counter++)
-	    {
-	        while(tokenarr[0] !== ")")
-	        {
-	            if (tokenarr.length === 0)
-	            {
+	var paren_destroyer = function(number, tokenarr){
+	    for (var counter = 0; counter < number; counter++){
+	        while(tokenarr[0] !== ")"){
+	            if (tokenarr.length === 0){
 	                break;
 	            }
 	            tokenarr.shift();
@@ -136,14 +121,11 @@ function read_tweet(text) {
 	}
   
 
-	var tweetread = function(tokens, arr)
-	{
-	    if (tokens.length === 0)
-	    {
+	var tweetread = function(tokens, arr){
+	    if (tokens.length === 0){
 	        return arr;
 	    }
-	    if (tokens[0] === "(")
-	    {
+	    if (tokens[0] === "("){
 	        arr.push(readtail(tokens.slice(1)));
 	        parens = number_of_parens + 1
 	        number_of_parens++
@@ -151,85 +133,66 @@ function read_tweet(text) {
 	        tweetread(tokens, arr);
 	        return arr;
 	    }
-	    if (tokens[0] === ")")
-	    {
+	    if (tokens[0] === ")"){
 	        tokens.shift
 	        return arr;
 	    }
-	    else
-	    {
+	    else{
 	        arr.push(tokens[0]);
 	        return tweetread(tokens.slice(1), arr);
 	    }
 	};
 
-	var readtail = function(tokens)
-	{
-	    if (tokens.length === 0)
-	    {
+	var readtail = function(tokens){
+	    if (tokens.length === 0){
 	        return;
 	    }
 	    return tweetread(tokens, []);    
 	};
 >>>>>>> 9ad36708ba841b0febcba4556d80b1114889d42c
     
-    var quote_destroyer = function(tokens)
-    {
+    var quote_destroyer = function(tokens){
         var insidequotes = false;
         var temparray = [];
         var tempstring = ""
-        for(var z = 0; z < tokens.length; z++)
-        {
-            if(typeof tokens[z] === "string" || typeof tokens[z] === "number")
-            {
-                if (typeof tokens[z] === "number")
-                {
+        for(var z = 0; z < tokens.length; z++){
+            if(typeof tokens[z] === "string" || typeof tokens[z] === "number"){
+                if (typeof tokens[z] === "number"){
                     tokens[z] = tokens[z].toString()
                 }
-                if(tokens[z].charAt(0) === "\"")
-                {
+                if(tokens[z].charAt(0) === "\""){
                     insidequotes = true;
                 }
-                if(tokens[z].charAt(tokens[z].length - 1) === "\"")
-                {
+                if(tokens[z].charAt(tokens[z].length - 1) === "\""){
                     tempstring += tokens[z];
                     temparray.push(tempstring);
                     tempstring = "";
                     insidequotes = false;
                 }
-                else
-                {
-                    if(insidequotes)
-                    {
+                else{
+                    if(insidequotes){
                         tempstring += (tokens[z] + " ");    
                     }
-                    else
-                    {
+                    else{
                         temparray.push(tokens[z]);
                     }
                 }
             }
-            else
-            {
+            else{
                 temparray.push(quote_destroyer(tokens[z]));
             }
         }
         return temparray;
     }
     
-    var we_are_number = function(tokens)
-    {
-        for (var counter = 0; counter < tokens.length; counter++)
-        {
-            if (typeof tokens[counter] === "string")
-            {
-                if (is_number(tokens[counter]))
-                {
+    var we_are_number = function(tokens){
+        for (var counter = 0; counter < tokens.length; counter++){
+            if (typeof tokens[counter] === "string"){
+                if (is_number(tokens[counter])){
                     tokens[counter] = Number(tokens[counter]);
                 }
             }
-            else
-            {
+            else{
                 we_are_number(tokens[counter])
             }           
         }
