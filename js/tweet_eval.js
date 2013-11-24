@@ -29,7 +29,7 @@ var tweeteval_child = function(tweet)
     }
     else if (first in built_in_functions)
     {
-        return built_in_functions(first)(tweeteval_child(tweet.body))
+        return built_in_functions[first](tweeteval_child(tweet.body))
     }
     else
     {
