@@ -98,35 +98,46 @@ function read_tweet(text) {
         var tempstring = ""
         for(var z = 0; z < tokens.length; z++)
         {
-            if(tokens[z].charAt(0) === "\"")
+            if(typeof tokens[z] === "string" || typeof tokens[z] === "number")
             {
-                insidequotes = true;
-            }
-            if(tokens[z].charAt(tokens[z].length - 1) === "\"")
-            {
-                tempstring += tokens[z];
-                temparray.push(tempstring);
-                tempstring = "";
-                insidequotes = false;
-            }
-            else
-            {
-                if(insidequotes)
+                if (typeof tokens[z] === "number")
                 {
-                    tempstring += (tokens[z] + " ");    
+                    tokens[z] = tokens[z].toString()
+                }
+                if(tokens[z].charAt(0) === "\"")
+                {
+                    insidequotes = true;
+                }
+                if(tokens[z].charAt(tokens[z].length - 1) === "\"")
+                {
+                    tempstring += tokens[z];
+                    temparray.push(tempstring);
+                    tempstring = "";
+                    insidequotes = false;
                 }
                 else
                 {
-                    temparray.push(tokens[z]);
+                    if(insidequotes)
+                    {
+                        tempstring += (tokens[z] + " ");    
+                    }
+                    else
+                    {
+                        temparray.push(tokens[z]);
+                    }
                 }
+            }
+            else
+            {
+                temparray.push(quote_destroyer(tokens[z]));
             }
         }
         return temparray;
-    };
+    }
 
 	//console.log(tokenize(string));
 	//console.log(tweetread(tokenize(string), []));
 	return quote_destroyer(tweetread(tokenize(string), []));
 }
-//var string = "Print \"Hello test this dick World!\"";
-//console.log(read_tweet(string));
+var string = "> If ((#n is 0) or (#n is 1)) (Return 1)";
+console.log(read_tweet(string));
